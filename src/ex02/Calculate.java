@@ -33,4 +33,15 @@ public class Calculate {
         }
         return count;
     }
+
+    /**
+     * Перетворює число в двійкове представлення.
+     *
+     * @param number Число для перетворення.
+     * @return Двійкове представлення числа.
+     */
+    public static String toBinaryString(double number) {
+        int intValue = (int) number;
+        return Integer.toBinaryString(intValue);
+    }
 }
