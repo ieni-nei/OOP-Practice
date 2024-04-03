@@ -1,23 +1,53 @@
 package src.ex03;
 
-import src.ex02.Item2d;
+import java.io.IOException;
 
 /**
- * Абстрактний клас для відображення результатів обчислень.
+ * Інтерфейс для відображення результатів обчислень.
  */
-public abstract class View {
-    protected Item2d item;
+interface View {
+    /**
+     * Показує весь об'єкт.
+     */
+    public void show();
 
     /**
-     * Конструктор класу View.
-     * @param item Об'єкт, результати якого будуть відображені.
+     * Показує заголовок.
      */
-    public View(Item2d item) {
-        this.item = item;
-    }
+    public void header();
 
     /**
-     * Метод для відображення результатів.
+     * Показує основну частину.
      */
-    public abstract void display();
+    public void body();
+
+    /**
+     * Показує колонтитул.
+     */
+    public void footer();
+
+    /**
+     * Виконує ініціалізацію.
+     *
+     * 
+     */
+    public void init();
+
+    public void initDefault();
+
+    /**
+     * Зберігає дані в файл за вказаним шляхом.
+     *
+     * @param path Шлях до файлу.
+     * @throws IOException Виникає, якщо виникає помилка при збереженні даних в файл.
+     */
+    public void save(String path) throws IOException;
+
+    /**
+     * Відновлює раніше збережені дані з вказаного шляху.
+     *
+     * @param path Шлях до файлу збереження.
+     * @throws Exception Виникає, якщо виникає помилка при відновленні даних з файлу.
+     */
+    public void restore(String path) throws Exception;
 }

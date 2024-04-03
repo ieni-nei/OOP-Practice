@@ -1,13 +1,13 @@
 package src.ex03;
 
-import java.io.Serializable;
-
 /**
- * Інтерфейс для об'єктів, що можуть бути відображені.
+ * Інтерфейс для об'єктів, які можуть бути відображені.
  */
-public interface Viewable extends Serializable {
+interface Viewable {
     /**
-     * Метод для відображення об'єкта.
+     * Повертає об'єкт, що здійснює відображення.
+     *
+     * @return Об'єкт, що реалізує інтерфейс View.
      */
-    void display();
+    public View getView();
 }

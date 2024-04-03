@@ -3,9 +3,12 @@ package src.ex03;
 /**
  * Інтерфейс для результатів обчислень, які будуть відображені.
  */
-public interface Viewable_Result extends Viewable {
+public class Viewable_Result implements Viewable {
     /**
-     * Метод для відображення результатів обчислень.
+     * Метод для повернення об'єкта, який буде відображений.
      */
-    void displayResult();
+    @Override
+    public View getView() {
+        return new View_Result(); // Повертаємо екземпляр класу View_Result
+    }
 }

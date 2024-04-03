@@ -24,11 +24,6 @@ public class Main {
         // Десеріалізація Item2d з байтового масиву
         Item2d deserializedItem = (Item2d) deserializeObject(serializedItem);
 
-        // Відображення перехідного значення поля до серіалізації та після десеріалізації
-        System.out.println("Перехідне значення transient поля перед серіалізацією: " + item.getTransientField());
-        System.out.println("Перехідне значення transient поля після десеріалізації: " + deserializedItem.getTransientField());
-        System.out.println();
-
         // Виведення результатів
         System.out.println("Серіалізований та десеріалізований елемент:");
         System.out.print("Аргументи: ");
