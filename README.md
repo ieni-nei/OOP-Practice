@@ -21,6 +21,10 @@
 
 `Результат:`
 
+
+https://github.com/ieni-nei/OOP-Practice/assets/113203792/9d9678ca-b8b6-411a-a915-d8f2ca1e2811
+
+
 `Результат тестування:`<br>
 ![](images/Task-4/MainTest.png)
 
