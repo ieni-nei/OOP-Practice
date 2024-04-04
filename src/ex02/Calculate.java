@@ -1,5 +1,3 @@
-package src.ex02;
-
 import java.text.DecimalFormat;
 
 /**
