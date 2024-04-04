@@ -1,35 +1,75 @@
 package src.ex02;
 
-import java.io.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * Клас, що представляє параметри та результати обчислень.
+ * Клас, що серіалізується, представляє параметри та результати обчислень.
+ * 
+ * @author Головненко Леонід aka @ieni-nei
  */
 public class Item2d implements Serializable {
     private static final long serialVersionUID = 1L;
-    private double[] arguments;
+    private List<Double> arguments;
     private double result;
 
     /**
      * Конструктор для створення екземпляра класу з параметрами.
+     *
      * @param arguments Аргументи функції.
-     * @param result Результат обчислення.
+     * @param result    Результат обчислення.
      */
-    public Item2d(double[] arguments, double result) {
-        this.arguments = arguments;
+    public Item2d(List<Double> arguments, double result) {
+        this.arguments = new ArrayList<>(arguments);
         this.result = result;
     }
 
     /**
-     * Повертає аргументи функції.
-     * @return Масив аргументів функції.
+     * Конструктор для створення екземпляра класу зі списку аргументів та розрахунком результату.
+     *
+     * @param arguments Список аргументів функції.
      */
-    public double[] getArguments() {
-        return arguments;
+    public Item2d(List<Double> arguments) {
+        this.arguments = arguments;
+        this.result = Calculate.calculateAverage(arguments);
+    }
+
+    /**
+     * Конструктор для створення екземпляра класу з масиву аргументів та розрахунком результату.
+     *
+     * @param arguments Масив аргументів функції.
+     */
+    public Item2d(double[] arguments) {
+        this.arguments = new ArrayList<>();
+        for (double arg : arguments) {
+            this.arguments.add(arg);
+        }
+        this.result = Calculate.calculateAverage(this.arguments);
+    }
+
+    /**
+     * Повертає аргументи функції.
+     *
+     * @return Список аргументів функції.
+     */
+    public List<Double> getArguments() {
+        return new ArrayList<>(arguments);
+    }
+
+    /**
+     * Встановлює новий список аргументів функції.
+     *
+     * @param arguments Новий список аргументів функції.
+     */
+    public void setArguments(List<Double> arguments) {
+        this.arguments = arguments;
     }
 
     /**
      * Повертає результат обчислення.
+     *
      * @return Результат обчислення.
      */
     public double getResult() {
@@ -37,26 +77,32 @@ public class Item2d implements Serializable {
     }
 
     /**
-     * Зберігає об'єкт у двійковий файл.
-     * @param fileName Назва файлу.
-     * @throws IOException Якщо сталася помилка вводу-виводу.
+     * Встановлює новий результат обчислення.
+     *
+     * @param result Новий результат обчислення.
      */
-    public void saveToFile(String fileName) throws IOException {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            outputStream.writeObject(this);
-        }
+    public void setResult(double result) {
+        this.result = result;
     }
 
-    /**
-     * Відновлює об'єкт з двійкового файлу.
-     * @param fileName Назва файлу.
-     * @return Відновлений об'єкт.
-     * @throws IOException Якщо сталася помилка вводу-виводу.
-     * @throws ClassNotFoundException Якщо клас не був знайдений при десеріалізації.
-     */
-    public static Item2d restoreFromFile(String fileName) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(fileName))) {
-            return (Item2d) inputStream.readObject();
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Item2d other = (Item2d) obj;
+        return Arrays.equals(arguments.toArray(), other.arguments.toArray()) &&
+               Double.compare(result, other.result) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int result1 = arguments != null ? arguments.hashCode() : 0;
+        long temp = Double.doubleToLongBits(result);
+        result1 = 31 * result1 + (int) (temp ^ (temp >>> 32));
+        return result1;
     }
 }

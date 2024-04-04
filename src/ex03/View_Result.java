@@ -5,20 +5,19 @@ import src.ex02.Item2d;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Клас для відображення результатів обчислень.
+ * 
+ * @author Головненко Леонід aka @ieni-nei
  */
 public class View_Result implements View {
-    private ArrayList<Item2d> items = new ArrayList<>();
-    
-    /**
-     * Конструктор класу View_Result без параметрів.
-     */
-    public View_Result() {
-        super();
-    }
+    private final List<Item2d> items = new ArrayList<>();
 
+    /**
+     * Виводить результат.
+     */
     @Override
     public void show() {
         header();
@@ -26,77 +25,90 @@ public class View_Result implements View {
         footer();
     }
 
+    /**
+     * Виводить заголовок.
+     */
     public void header() {
         System.out.println("========Результати обчислень========");
     }
 
+    /**
+     * Виводить тіло.
+     */
     public void body() {
-        double sum = 0;
-        System.out.print("Аргументи: ");
         for (Item2d item : items) {
-            double[] arguments = item.getArguments();
-            for (int i = 0; i < arguments.length; i++) {
-                System.out.print(arguments[i]);
-                sum += arguments[i];
-                if (i < arguments.length - 1 || items.indexOf(item) < items.size() - 1) {
-                    System.out.print(", ");
-                }
-            }
+            System.out.println("Аргументи: " + item.getArguments());
+            double average = item.getResult();
+            System.out.println("Середнє арифметичне: " + average);
+            System.out.println("Результат у двійковому форматі: " + Calculate.toBinaryString(average));
+            System.out.println("Кількість одиниць у двійковому поданні цілої частини: " + Calculate.countOnes(average));
         }
-        System.out.println();
-        double average = sum / items.size();
-        System.out.println("Середнє арифметичне: " + average);
-        System.out.println("Результат у двійковому форматі: " + Calculate.toBinaryString(average));
-        System.out.println("Кількість одиниць у двійковому поданні цілої частини: " + Calculate.countOnes(average));
     }
 
+    /**
+     * Виводить підвал.
+     */
     public void footer() {
         System.out.println("===================================");
     }
 
+    /**
+     * Ініціалізує результати згенерованими значеннями.
+     */
     @Override
     public void init() {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-            items.clear();
-            for (int i = 0; i < 4; i++) {
-                System.out.print("Введіть " + (i + 1) + "-й аргумент: ");
-                double argument = Double.parseDouble(br.readLine());
-                double[] arguments = {argument};
-                Item2d item = new Item2d(arguments);
-                items.add(item);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        items.clear();
+        List<Double> arguments = Calculate.randomArguments();
+        double average = Calculate.calculateAverage(arguments);
+        items.add(new Item2d(arguments, average));
+        System.out.println("Згенеровано 4 довільних аргументи");
     }
-    
+
+    /**
+     * Ініціалізує результати зі стандартними значеннями.
+     */
     @Override
     public void initDefault() {
         items.clear();
         double[] defaultArguments = {Math.PI / 6, Math.PI, 3 * Math.PI / 2, Math.PI / 2};
+        List<Double> arguments = new ArrayList<>();
         for (double argument : defaultArguments) {
-            double[] arguments = {Calculate.roundValue(argument, 2)};
-            Item2d item = new Item2d(arguments);
-            items.add(item);
+            arguments.add(Calculate.roundValue(argument, 2));
         }
+        double average = Calculate.calculateAverage(arguments);
+        items.add(new Item2d(arguments, average));
+        System.out.println("Обрано 4 статичних аргументи");
     }
 
+
+    /**
+     * Зберігає результати у файл за вказаним шляхом.
+     *
+     * @param path Шлях до файлу.
+     * @throws IOException Виникає, якщо виникає помилка при збереженні даних у файл.
+     */
     @Override
     public void save(String path) throws IOException {
-        try (FileOutputStream fileOut = new FileOutputStream(path);
-             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
-            objectOut.writeObject(this.items);
-            System.out.println("    Об'єкти збережено у файл " + path);
+        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(path))) {
+            objectOut.writeObject(items);
+            System.out.println("Об'єкти збережено у файл " + path);
         }
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Відновлює раніше збережені результати з вказаного шляху.
+     *
+     * @param path Шлях до файлу збереження.
+     * @throws IOException            Виникає, якщо виникає помилка при відновленні даних з файлу.
+     * @throws ClassNotFoundException Виникає, якщо не вдається знайти клас під час відновлення даних з файлу.
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public void restore(String path) throws IOException, ClassNotFoundException {
-        try (FileInputStream fileIn = new FileInputStream(path);
-             ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
-            this.items = (ArrayList<Item2d>) objectIn.readObject();
-            System.out.println("    Об'єкти відновлено з файлу " + path);
+        try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(path))) {
+            items.clear();
+            items.addAll((ArrayList<Item2d>) objectIn.readObject());
+            System.out.println("Об'єкти відновлено з файлу " + path);
         }
     }
 }

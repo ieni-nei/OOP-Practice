@@ -6,6 +6,8 @@ package src.ex03;
 public class Viewable_Result implements Viewable {
     /**
      * Метод для повернення об'єкта, який буде відображений.
+     *
+     * @return Об'єкт, який буде відображений.
      */
     @Override
     public View getView() {

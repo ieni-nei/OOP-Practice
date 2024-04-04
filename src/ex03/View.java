@@ -4,44 +4,47 @@ import java.io.IOException;
 
 /**
  * Інтерфейс для відображення результатів обчислень.
+ * 
+ * @author Головненко Леонід aka @ieni-nei
  */
 interface View {
     /**
      * Показує весь об'єкт.
      */
-    public void show();
+    void show();
 
     /**
      * Показує заголовок.
      */
-    public void header();
+    void header();
 
     /**
      * Показує основну частину.
      */
-    public void body();
+    void body();
 
     /**
      * Показує колонтитул.
      */
-    public void footer();
+    void footer();
 
     /**
      * Виконує ініціалізацію.
-     *
-     * 
      */
-    public void init();
-
-    public void initDefault();
+    void init();
 
     /**
-     * Зберігає дані в файл за вказаним шляхом.
+     * Виконує ініціалізацію за замовчуванням.
+     */
+    void initDefault();
+
+    /**
+     * Зберігає дані у файл за вказаним шляхом.
      *
      * @param path Шлях до файлу.
-     * @throws IOException Виникає, якщо виникає помилка при збереженні даних в файл.
+     * @throws IOException Виникає, якщо виникає помилка при збереженні даних у файл.
      */
-    public void save(String path) throws IOException;
+    void save(String path) throws IOException;
 
     /**
      * Відновлює раніше збережені дані з вказаного шляху.
@@ -49,5 +52,5 @@ interface View {
      * @param path Шлях до файлу збереження.
      * @throws Exception Виникає, якщо виникає помилка при відновленні даних з файлу.
      */
-    public void restore(String path) throws Exception;
+    void restore(String path) throws Exception;
 }

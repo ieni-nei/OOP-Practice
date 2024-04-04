@@ -1,29 +1,52 @@
+package src.ex02;
+
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
- * Клас для обчислення середнього арифметичного та кількості одиниць у двійковому поданні цілої частини.
+ * Клас для обчислення значень та перетворення чисел.
+ * 
+ * @author Головненко Леонід aka @ieni-nei
  */
 public class Calculate {
+    private static final Random random = new Random();
+
     /**
-     * Обчислює середнє арифметичне значення функції 1000*sin(α) для заданих аргументів.
+     * Генерує список випадкових аргументів.
      *
-     * @param arguments Масив аргументів.
+     * @return Список випадкових аргументів.
+     */
+    public static List<Double> randomArguments() {
+        List<Double> arguments = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            double argument = roundValue(random.nextDouble(), 2); // Генерує випадкове дійсне число від 0 до 1
+            arguments.add(argument);
+        }
+        return arguments;
+    }
+
+    /**
+     * Обчислює середнє значення функції 1000*sin(α) для заданих аргументів.
+     *
+     * @param arguments Список аргументів.
      * @return Результат обчислення.
      */
-    public static double calculateAverage(double[] arguments) {
+    public static double calculateAverage(List<Double> arguments) {
         double sum = 0;
         for (double arg : arguments) {
             sum += 1000 * Math.sin(arg);
         }
-        double value = roundValue(sum / arguments.length, 1);
-        return value;
+        double average = sum / arguments.size();
+        return roundValue(average, 1);
     }
 
     /**
-     * Обчислює кількість одиниць у двійковому поданні цілої частини середнього арифметичного.
+     * Рахує кількість одиниць у двійковому представленні цілої частини середнього значення.
      *
-     * @param average Середнє арифметичне значення.
-     * @return Кількість одиниць у двійковому поданні цілої частини.
+     * @param average Середнє значення.
+     * @return Кількість одиниць у двійковому представленні цілої частини середнього значення.
      */
     public static int countOnes(double average) {
         int intValue = (int) average;
@@ -38,7 +61,7 @@ public class Calculate {
     }
 
     /**
-     * Перетворює число в двійкове представлення.
+     * Перетворює число в його двійкове представлення.
      *
      * @param number Число для перетворення.
      * @return Двійкове представлення числа.
@@ -49,7 +72,7 @@ public class Calculate {
     }
 
     /**
-     * Округлює число до заданої кількості знаків після коми.
+     * Округлює число до вказаної кількості знаків після коми.
      *
      * @param value         Число для округлення.
      * @param decimalPlaces Кількість знаків після коми.

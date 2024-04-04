@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 /**
  * Клас для демонстрації збереження та відновлення стану об'єкта з використанням серіалізації.
+ * 
+ * @author Головненко Леонід aka @ieni-nei
  */
 public class Main {
     /**
@@ -25,9 +27,10 @@ public class Main {
             System.out.println("Оберіть дію:");
             System.out.println("1. Ввести чотири довільні аргументи");
             System.out.println("2. Використати аргументи за замовчуванням");
-            System.out.println("3. Зберегти результати у файл");
-            System.out.println("4. Відновити результати з файлу");
-            System.out.println("5. Вийти");
+            System.out.println("3. Показати результати");
+            System.out.println("4. Зберегти результати у файл");
+            System.out.println("5. Відновити результати з файлу");
+            System.out.println("6. Вийти");
             System.out.print("Введіть номер дії: ");
 
             try {
@@ -37,24 +40,25 @@ public class Main {
                 switch (choice) {
                     case 1:
                         view.init();
-                        view.show();
                         break;
                     case 2:
                         view.initDefault();
-                        view.show();
                         break;
                     case 3:
-                        view.save("item.dat");
+                        view.show();
                         break;
                     case 4:
-                        File file = new File("item.dat");
+                        view.save("temp/Task-3/item.dat");
+                        break;
+                    case 5:
+                        File file = new File("temp/Task-3/item.dat");
                         if (file.exists()) {
-                            view.restore("item.dat");
+                            view.restore("temp/Task-3/item.dat");
                         } else {
                             System.out.println("Спочатку збережіть результати у файл.");
                         }
                         break;
-                    case 5:
+                    case 6:
                         scanner.close();
                         System.exit(0);
                         break;

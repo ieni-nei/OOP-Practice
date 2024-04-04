@@ -1,7 +1,6 @@
 package src.ex02;
 
 import java.io.*;
-import java.text.DecimalFormat;
 
 /**
  * Клас для демонстрації збереження та відновлення стану об'єкта з використанням серіалізації.
@@ -9,75 +8,60 @@ import java.text.DecimalFormat;
 public class Main {
     /**
      * Головний метод.
+     * 
+     * @author Головненко Леонід aka @ieni-nei
      * @param args Аргументи командного рядка (не використовуються в цій програмі).
      */
     public static void main(String[] args) {
         // Створення екземпляра Item2d
-        double[] arguments = {Math.PI/6, Math.PI, 3 * Math.PI/2, Math.PI/2};
-        double average = Calculate.calculateAverage(arguments);
-        int onesCount = Calculate.countOnes(average);
-        Item2d item = new Item2d(arguments, average);
+        Item2d item = new Item2d(Calculate.randomArguments());
 
-        // Серіалізація Item2d до байтового масиву
-        byte[] serializedItem = serializeObject(item);
+        // Серіалізація Item2d до файлу
+        serializeObject(item, "temp/Task-2/item.dat");
 
-        // Десеріалізація Item2d з байтового масиву
-        Item2d deserializedItem = (Item2d) deserializeObject(serializedItem);
+        // Десеріалізація Item2d з файлу
+        Item2d deserializedItem = (Item2d) deserializeObject("temp/Task-2/item.dat");
+
+        // Обчислення середнього значення
+        double average = Calculate.calculateAverage(deserializedItem.getArguments());
+        deserializedItem.setResult(average);
 
         // Виведення результатів
         System.out.println("Серіалізований та десеріалізований елемент:");
         System.out.print("Аргументи: ");
-            for (double arg : deserializedItem.getArguments()) {
-                System.out.print(round(arg, 2) + " ");
-            }
+        for (double arg : deserializedItem.getArguments()) {
+            System.out.print(Calculate.roundValue(arg, 2) + " ");
+        }
         System.out.println();
-        System.out.println("Середнє арифметичне: " + round(deserializedItem.getResult(), 1));
-        System.out.println("Кількість одиниць у двійковому поданні цілої частини: " + onesCount);
+        System.out.println("Середнє арифметичне: " + Calculate.roundValue(deserializedItem.getResult(), 1));
+        System.out.println("Кількість одиниць у двійковому поданні цілої частини: " + Calculate.countOnes(deserializedItem.getResult()));
     }
 
     /**
-     * Серіалізує об’єкт у масив байтів.
+     * Серіалізує об’єкт у файл.
      * @param obj Об’єкт для серіалізації.
-     * @return Масив байтів, що містить серіалізований об’єкт.
+     * @param fileName Назва файлу, куди буде збережено серіалізований об’єкт.
      */
-    private static byte[] serializeObject(Object obj) {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+    private static void serializeObject(Object obj, String fileName) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
             oos.writeObject(obj);
-            return bos.toByteArray();
+            System.out.println("Об'єкт збережено у файл " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
     }
 
     /**
-     * Десеріалізує об'єкт із байтового масиву.
-     * @param bytes Масив байтів, що містить серіалізований об’єкт.
+     * Десеріалізує об'єкт з файлу.
+     * @param fileName Назва файлу, звідки буде відновлено об'єкт.
      * @return Десеріалізований об'єкт.
      */
-    private static Object deserializeObject(byte[] bytes) {
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-             ObjectInputStream ois = new ObjectInputStream(bis)) {
+    private static Object deserializeObject(String fileName) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
             return ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
         }
-    }
-
-    /**
-     * Округлює подвійне значення до вказаної кількості знаків після коми.
-     * @param value Значення, що округляється.
-     * @param decimalPlaces Кількість знаків після коми для округлення.
-     * @return Округлене значення.
-     */
-    private static double round(double value, int decimalPlaces) {
-        String pattern = "#.";
-        for (int i = 0; i < decimalPlaces; i++) {
-            pattern += "#";
-        }
-        DecimalFormat df = new DecimalFormat(pattern);
-        return Double.parseDouble(df.format(value));
     }
 }
