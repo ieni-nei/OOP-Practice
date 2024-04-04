@@ -40,6 +40,10 @@
 
 `Результат:`
 
+
+https://github.com/ieni-nei/OOP-Practice/assets/113203792/2bc95e5c-9c71-4543-9168-a467b9ecf47c
+
+
 `Main.java`:
 ```java
 package src.ex05;
