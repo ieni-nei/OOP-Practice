@@ -53,6 +53,16 @@ public class View_Result implements View {
     }
 
     /**
+     * Повертає список елементів, які будуть відображені.
+     *
+     * @return Список елементів.
+     */
+    @Override
+    public List<Item2d> getItems() {
+        return this.items;
+    }
+
+    /**
      * Ініціалізує результати згенерованими значеннями.
      */
     @Override

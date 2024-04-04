@@ -1,13 +1,16 @@
 package src.ex03;
 
 import java.io.IOException;
+import java.util.List;
+
+import src.ex02.Item2d;
 
 /**
  * Інтерфейс для відображення результатів обчислень.
  * 
  * @author Головненко Леонід aka @ieni-nei
  */
-interface View {
+public interface View {
     /**
      * Показує весь об'єкт.
      */
@@ -53,4 +56,10 @@ interface View {
      * @throws Exception Виникає, якщо виникає помилка при відновленні даних з файлу.
      */
     void restore(String path) throws Exception;
+
+    /**
+     * Повертає список об'єктів типу Item2d.
+     *
+     */
+    public List<Item2d> getItems();
 }

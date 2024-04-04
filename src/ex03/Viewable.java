@@ -3,7 +3,7 @@ package src.ex03;
 /**
  * Інтерфейс для об'єктів, які можуть бути відображені.
  */
-interface Viewable {
+public interface Viewable {
     /**
      * Повертає об'єкт, що здійснює відображення.
      *
