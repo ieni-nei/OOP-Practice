@@ -25,7 +25,7 @@ public class ViewConsoleCommand implements ConsoleCommand {
 
     @Override
     public void execute() {
-        System.out.println("Переглянути поточний.");
+        System.out.println("Перегляд поточної таблиці.");
         view.show();
     }
 }

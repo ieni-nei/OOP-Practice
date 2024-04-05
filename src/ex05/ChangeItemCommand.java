@@ -1,59 +1,78 @@
 package src.ex05;
 
 import src.ex02.Item2d;
-import java.util.List;
 import java.util.Scanner;
 
-/** 
- * Консольна команда Зміна елементу.
+/**
+ * Команда консолі для зміни елемента.
  */
 public class ChangeItemCommand implements Command {
 
-    private final Scanner scanner;
-    private final List<Item2d> items;
+    private Item2d item;
+    private int offset;
+    private Scanner scanner;
 
-    public ChangeItemCommand(Scanner scanner, List<Item2d> items) {
+    /**
+     * Конструктор з параметрами.
+     *
+     * @param scanner Сканер для введення користувача.
+     * @param item    Елемент, який потрібно змінити.
+     */
+    public ChangeItemCommand(Scanner scanner, Item2d item) {
         this.scanner = scanner;
-        this.items = items;
+        this.item = item;
     }
 
+    /**
+     * Встановлює новий елемент.
+     *
+     * @param item Новий елемент.
+     */
+    public void setItem(Item2d item) {
+        this.item = item;
+    }
+
+    /**
+     * Повертає поточний елемент.
+     *
+     * @return Поточний елемент.
+     */
+    public Item2d getItem() {
+        return this.item;
+    }
+
+    /**
+     * Встановлює нове значення зміщення.
+     *
+     * @param offset Нове значення зміщення.
+     */
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    /**
+     * Повертає поточне значення зміщення.
+     *
+     * @return Поточне значення зміщення.
+     */
+    public int getOffset() {
+        return this.offset;
+    }
+
+    /**
+     * Виконує команду зміни елемента.
+     */
     @Override
     public void execute() {
-        // Перевірка наявності елементів у списку
-        if (items == null || items.isEmpty()) {
-            System.out.println("Помилка: список елементів порожній.");
-            return;
+        if (item != null) {
+            System.out.print("Введіть нове значення зміщення: ");
+            int newOffset = scanner.nextInt();
+            setOffset(newOffset);
+            double newResult = item.getResult() + getOffset();
+            item.setResult(newResult);
+            System.out.println("Змінено значення елемента. Новий результат: " + newResult);
+        } else {
+            System.out.println("Помилка: елемент не було ініціалізовано.");
         }
-
-        // Відображення списку елементів для вибору
-        System.out.println("Список елементів:");
-        for (int i = 0; i < items.size(); i++) {
-            System.out.println(i + ": " + items.get(i));
-        }
-
-        // Введення індексу елемента, який потрібно змінити
-        System.out.print("Введіть індекс елемента, який ви хочете змінити: ");
-        int index = scanner.nextInt();
-        scanner.nextLine(); // Забираємо зайвий перехід на новий рядок
-
-        // Перевірка дійсності індексу
-        if (index < 0 || index >= items.size()) {
-            System.out.println("Помилка: недійсний індекс.");
-            return;
-        }
-
-        // Отримання вибраного елемента
-        Item2d item = items.get(index);
-
-        // Введення значення зміщення
-        System.out.print("Введіть значення зміщення: ");
-        double offsetValue = scanner.nextDouble();
-        scanner.nextLine(); // Забираємо зайвий перехід на новий рядок
-
-        // Застосування зміщення до елемента
-        double newResult = item.getResult() + offsetValue;
-        item.setResult(newResult);
-
-        System.out.println("Елемент було змінено. Нове значення результату: " + newResult);
     }
 }

@@ -25,12 +25,10 @@ public class RestoreConsoleCommand implements ConsoleCommand {
 
     @Override
     public void execute() {
-        System.out.println("Відновлено останнє збережене.");
         try {
             view.restore("temp/Task-5/item.dat");
         } catch (Exception e) {
             System.err.println("Помилка серіалізації: " + e);
         }
-        view.show();
     }
 }

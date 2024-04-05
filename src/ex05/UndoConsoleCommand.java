@@ -31,6 +31,5 @@ public class UndoConsoleCommand implements ConsoleCommand {
         } catch (Exception e) {
             System.err.println("Помилка серіалізації: " + e);
         }
-        view.show();
     }
 }

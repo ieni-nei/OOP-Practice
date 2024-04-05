@@ -26,12 +26,10 @@ public class SaveConsoleCommand implements ConsoleCommand {
 
     @Override
     public void execute() {
-        System.out.println("Зберегти поточний.");
         try {
             view.save("temp/Task-5/item.dat");
         } catch (IOException e) {
             System.err.println("Помилка серіалізації: " + e);
         }
-        view.show();
     }
 }

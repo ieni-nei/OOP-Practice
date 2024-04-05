@@ -41,7 +41,5 @@ public class ChangeConsoleCommand implements ConsoleCommand {
             double result = item.getResult() + offset;
             item.setResult(result);
         }
-
-        view.show();
     }
 }

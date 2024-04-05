@@ -24,7 +24,6 @@ public class GenerateConsoleCommand implements ConsoleCommand {
     
     @Override
     public void execute(){
-        System.out.println("Випадкова генерація.");
         view.init();
         view.show();
     }

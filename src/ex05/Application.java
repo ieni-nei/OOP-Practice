@@ -3,8 +3,6 @@ package src.ex05;
 import src.ex03.View;
 import src.ex04.Viewable_Table;
 
-import java.util.Scanner;
-
 /**
  * Формує та відображає меню
  * 
@@ -24,8 +22,6 @@ public class Application {
 
     private final Menu menu = new Menu();
 
-    private final Scanner scanner = new Scanner(System.in);
-
     public void run() {
         menu.add(new ViewConsoleCommand(view));
         menu.add(new GenerateConsoleCommand(view));
@@ -33,11 +29,6 @@ public class Application {
         menu.add(new SaveConsoleCommand(view));
         menu.add(new RestoreConsoleCommand(view));
         menu.add(new UndoConsoleCommand(view));
-        menu.add(new SortConsoleCommand(view));
         menu.execute();
-    }
-
-    public Scanner getScanner() {
-        return scanner;
     }
 }

@@ -71,7 +71,7 @@ public class View_Result implements View {
         List<Double> arguments = Calculate.randomArguments();
         double average = Calculate.calculateAverage(arguments);
         items.add(new Item2d(arguments, average));
-        System.out.println("Згенеровано 4 довільних аргументи");
+        System.out.println("Згенеровано 4 випадкові аргументи.");
     }
 
     /**
@@ -101,7 +101,7 @@ public class View_Result implements View {
     public void save(String path) throws IOException {
         try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(path))) {
             objectOut.writeObject(items);
-            System.out.println("Об'єкти збережено у файл " + path);
+            System.out.println("Збережено поточний результату у файлі " + path);
         }
     }
 

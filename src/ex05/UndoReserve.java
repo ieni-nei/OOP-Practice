@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class UndoReserve {
 
-    private static final String LAST_FILE = "temp/Task-5/last.dat";
-    private static final String BACKUP_FILE = "temp/Task-5/back.dat";
+    private static final String LAST_FILE = "temp/Task-5/item.dat";
+    private static final String BACKUP_FILE = "temp/Task-5/item.dat";
 
     private List<Item2d> items;
     private View view;
@@ -32,10 +32,10 @@ public class UndoReserve {
     public void write() throws IOException, Exception {
         items = ((View_Result) view).getItems();
         reWrite();
-        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(LAST_FILE));
-        os.writeObject(items);
-        os.flush();
-        os.close();
+        ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(LAST_FILE));
+        objectOut.writeObject(items);
+        objectOut.flush();
+        objectOut.close();
     }
 
     /**
@@ -47,14 +47,14 @@ public class UndoReserve {
     public void reWrite() throws Exception {
         items = ((View_Result) view).getItems();
         if (new File(LAST_FILE).exists()) {
-            ObjectInputStream is = new ObjectInputStream(new FileInputStream(LAST_FILE));
-            items = (ArrayList<Item2d>) is.readObject();
-            is.close();
+            ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(LAST_FILE));
+            items = (ArrayList<Item2d>) objectIn.readObject();
+            objectIn.close();
 
-            ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(BACKUP_FILE));
-            os.writeObject(items);
-            os.flush();
-            os.close();
+            ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(BACKUP_FILE));
+            objectOut.writeObject(items);
+            objectOut.flush();
+            objectOut.close();
         }
     }
 
@@ -66,9 +66,9 @@ public class UndoReserve {
     @SuppressWarnings("unchecked")
     public void undo() throws Exception {
         if (new File(BACKUP_FILE).exists()) {
-            ObjectInputStream is = new ObjectInputStream(new FileInputStream(BACKUP_FILE));
-            items = (ArrayList<Item2d>) is.readObject();
-            is.close();
+            ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(BACKUP_FILE));
+            items = (ArrayList<Item2d>) objectIn.readObject();
+            objectIn.close();
         } else {
             System.out.println("Файл резервної копії відсутній.");
         }

@@ -1,19 +1,38 @@
 # Практика з ООП
 ### **Навігація**
-<img src="images/Navigation.jpg" width="210px" align="right">
+<img src="images/Readme/Navigation.jpg" width="210px" align="right">
 
-| Завдання та зображення                              |      Коди       |       Тести       |
-| :-------------------------------------------------- | :-------------: | :---------------: |
-| [Завдання 6]()                                      | [Код](src/ex06) | [Тест](test/ex06) |
-| [Завдання 5](#завдання-5---обробка-колекцій-040424) | [Код](src/ex05) |         —         |
-| [Завдання 4](#завдання-4---поліморфізм-030424)      | [Код](src/ex04) | [Тест](test/ex04) |
-| [Завдання 3](#завдання-3---спадкування-020424)      | [Код](src/ex03) |         —         |
-| [Завдання 2](#завдання-2---класи-та-обєкти-010424)  | [Код](src/ex02) | [Тест](test/ex02) |
-| [Завдання 1](#завдання-1-290323)                    | [Код](src/ex01) |         —         |
+| Завдання та зображення                                 |      Коди       |       Тести       |
+| :----------------------------------------------------- | :-------------: | :---------------: |
+| [Завдання 7]()                                         |  [#](src/ex07)  |  [#](test/ex07)   |
+| [Завдання 6](#завдання-6---паралельне-виконання050424) | [Код](src/ex06) | [Тест](test/ex06) |
+| [Завдання 5](#завдання-5---обробка-колекцій-040424)    | [Код](src/ex05) |         —         |
+| [Завдання 4](#завдання-4---поліморфізм-030424)         | [Код](src/ex04) | [Тест](test/ex04) |
+| [Завдання 3](#завдання-3---спадкування-020424)         | [Код](src/ex03) |         —         |
+| [Завдання 2](#завдання-2---класи-та-обєкти-010424)     | [Код](src/ex02) | [Тест](test/ex02) |
+| [Завдання 1](#завдання-1-290323)                       | [Код](src/ex01) |         —         |
 
-## Завдання 6 - 
-Реалізувати можливість скасування (undo) операцій (команд).<br>
+## Завдання 7 - 
+<img src="images/Readme/Weekend.gif" width="210px" align="right">
 
+
+`Результат:`
+
+`Результат тестування:`<br>
+![](images/Task-7/MainTest.png)
+
+`Main.java`:
+```java
+
+```
+
+
+[До початку](#практика-з-ооп)
+
+## Завдання 6 - Паралельне виконання.(05.04.24)
+Продемонструвати можливість паралельної обробки елементів колекції (пошук мінімуму, максимуму, обчислення середнього значення, відбір за критерієм, статистична обробка тощо).<br>
+
+Управління чергою завдань (команд) реалізувати за допомогою шаблону Worker Thread.<br>
 
 
 `Результат:`
@@ -38,21 +57,14 @@
 
 Забезпечити діалоговий інтерфейс із користувачем.<br>
 
+Розробити клас для тестування функціональності програми.<br>
+
 `Результат:`
-
-
-https://github.com/ieni-nei/OOP-Practice/assets/113203792/2bc95e5c-9c71-4543-9168-a467b9ecf47c
 
 
 `Main.java`:
 ```java
 package src.ex05;
-
-import src.ex02.Item2d;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 /**Обчислення та відображення результатів
  * Містить реалізацію статичного методу main()
@@ -64,18 +76,6 @@ public class Main {
     public static void main(String[] args){
         Application app = Application.getInstance();
         app.run();
-
-        // Ініціалізуємо список елементів
-        List<Item2d> items = new ArrayList<>();
-
-        // Ініціалізуємо Scanner для введення користувача
-        Scanner scanner = Application.getInstance().getScanner();
-
-        // Створюємо команду для зміни елемента
-        Command changeItemCommand = new ChangeItemCommand(scanner, items);
-
-        // Виконуємо команду зміни елемента
-        changeItemCommand.execute();
     }
 }
 
@@ -87,8 +87,6 @@ package src.ex05;
 
 import src.ex03.View;
 import src.ex04.Viewable_Table;
-
-import java.util.Scanner;
 
 /**
  * Формує та відображає меню
@@ -109,8 +107,6 @@ public class Application {
 
     private final Menu menu = new Menu();
 
-    private final Scanner scanner = new Scanner(System.in);
-
     public void run() {
         menu.add(new ViewConsoleCommand(view));
         menu.add(new GenerateConsoleCommand(view));
@@ -118,12 +114,7 @@ public class Application {
         menu.add(new SaveConsoleCommand(view));
         menu.add(new RestoreConsoleCommand(view));
         menu.add(new UndoConsoleCommand(view));
-        menu.add(new SortConsoleCommand(view));
         menu.execute();
-    }
-
-    public Scanner getScanner() {
-        return scanner;
     }
 }
 
@@ -191,6 +182,15 @@ public class Menu implements Command {
             System.out.println("Неправильна команда.");
             continue menu;
         }
+    }
+
+    /**
+     * Повертає список команд меню.
+     *
+     * @return Список команд меню.
+     */
+    public List<ConsoleCommand> getCommands() {
+        return menu;
     }
 }
 

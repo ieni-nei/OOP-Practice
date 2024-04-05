@@ -59,4 +59,13 @@ public class Menu implements Command {
             continue menu;
         }
     }
+
+    /**
+     * Повертає список команд меню.
+     *
+     * @return Список команд меню.
+     */
+    public List<ConsoleCommand> getCommands() {
+        return menu;
+    }
 }
