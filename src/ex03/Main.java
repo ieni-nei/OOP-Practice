@@ -1,4 +1,4 @@
-package src.ex03;
+package ex03;
 
 import java.io.File;
 import java.util.NoSuchElementException;

@@ -1,7 +1,7 @@
-package src.ex04;
+package ex04;
 
-import src.ex03.View;
-import src.ex03.Viewable_Result;
+import ex03.View;
+import ex03.Viewable_Result;
 
 /**
  * Клас, що реалізує інтерфейс Viewable_Result для створення об'єктів типу View_Table.

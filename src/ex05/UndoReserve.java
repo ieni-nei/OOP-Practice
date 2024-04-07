@@ -1,8 +1,8 @@
-package src.ex05;
+package ex05;
 
-import src.ex02.Item2d;
-import src.ex03.View;
-import src.ex03.View_Result;
+import ex02.Item2d;
+import ex03.View;
+import ex03.View_Result;
 
 import java.io.*;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package src.ex05;
+package ex05;
 
 /**Інтерфейс консольної команди
  * Pattern Command

@@ -1,7 +1,7 @@
-package src.ex03;
+package ex03;
 
-import src.ex02.Calculate;
-import src.ex02.Item2d;
+import ex02.Calculate;
+import ex02.Item2d;
 
 import java.io.*;
 import java.util.ArrayList;

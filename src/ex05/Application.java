@@ -1,7 +1,7 @@
-package src.ex05;
+package ex05;
 
-import src.ex03.View;
-import src.ex04.Viewable_Table;
+import ex03.View;
+import ex04.Viewable_Table;
 
 /**
  * Формує та відображає меню

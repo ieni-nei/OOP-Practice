@@ -1,6 +1,6 @@
 package test.ex04;
 
-import src.ex04.View_Table;
+import ex04.View_Table;
 
 import java.io.IOException;
 

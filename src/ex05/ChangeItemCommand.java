@@ -1,6 +1,6 @@
-package src.ex05;
+package ex05;
 
-import src.ex02.Item2d;
+import ex02.Item2d;
 import java.util.Scanner;
 
 /**

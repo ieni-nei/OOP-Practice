@@ -1,10 +1,10 @@
-package src.ex04;
+package ex04;
 
 import java.util.List;
 
-import src.ex02.Calculate;
-import src.ex02.Item2d;
-import src.ex03.View_Result;
+import ex02.Calculate;
+import ex02.Item2d;
+import ex03.View_Result;
 
 /**
  * Клас для відображення результатів у вигляді таблиці.

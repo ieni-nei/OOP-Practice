@@ -1,7 +1,7 @@
-package src.ex05;
+package ex05;
 
-import src.ex03.View;
-import src.ex02.Item2d;
+import ex03.View;
+import ex02.Item2d;
 
 import java.util.List;
 import java.util.Random;

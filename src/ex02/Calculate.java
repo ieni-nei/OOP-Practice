@@ -1,4 +1,4 @@
-package src.ex02;
+package ex02;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

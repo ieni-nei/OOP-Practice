@@ -1,6 +1,6 @@
-package src.ex04;
+package ex04;
 
-import src.ex03.View;
+import ex03.View;
 
 import java.io.File;
 import java.util.NoSuchElementException;

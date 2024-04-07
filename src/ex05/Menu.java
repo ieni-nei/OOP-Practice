@@ -1,4 +1,4 @@
-package src.ex05;
+package ex05;
 
 import java.io.BufferedReader;
 import java.io.IOException;

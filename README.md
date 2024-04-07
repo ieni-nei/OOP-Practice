@@ -5,7 +5,7 @@
 | Завдання та зображення                                 |      Коди       |       Тести       |
 | :----------------------------------------------------- | :-------------: | :---------------: |
 | [Завдання 7]()                                         |  [#](src/ex07)  |  [#](test/ex07)   |
-| [Завдання 6](#завдання-6---паралельне-виконання050424) | [Код](src/ex06) | [Тест](test/ex06) |
+| [Завдання 6](#завдання-6---паралельне-виконання050424) | [Код](src/ex06) |         —         |
 | [Завдання 5](#завдання-5---обробка-колекцій-040424)    | [Код](src/ex05) |         —         |
 | [Завдання 4](#завдання-4---поліморфізм-030424)         | [Код](src/ex04) | [Тест](test/ex04) |
 | [Завдання 3](#завдання-3---спадкування-020424)         | [Код](src/ex03) |         —         |
@@ -35,16 +35,156 @@
 Управління чергою завдань (команд) реалізувати за допомогою шаблону Worker Thread.<br>
 
 
-`Результат:`
-
-`Результат тестування:`<br>
-![](images/Task-6/MainTest.png)
+`Результат:`<br>
+![](images/Task-6/Result.png)
 
 `Main.java`:
 ```java
+package ex06;
+
+import ex03.View;
+import ex04.Viewable_Table;
+import ex05.*;
+
+public class Main {
+
+    private View view = new Viewable_Table().getView();
+    private Menu menu = new Menu();
+    private CommandQueue commandQueue = new CommandQueue();
+
+    public void run() {
+        menu.add(new ViewConsoleCommand(view));
+        menu.add(new GenerateConsoleCommand(view));
+        menu.add(new ChangeConsoleCommand(view));
+        menu.add(new SaveConsoleCommand(view));
+        menu.add(new RestoreConsoleCommand(view));
+        menu.add(new UndoConsoleCommand(view));
+        menu.add(new ExecuteConsoleCommand(view, commandQueue));
+        menu.execute();
+    }
+
+    public static void main(String[] args) {
+        Main main = new Main();
+        main.run();
+    }
+}
 
 ```
 
+`CommandQueue.java`:
+```java
+package ex06;
+
+import ex05.Command;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class CommandQueue {
+
+    private Queue<Command> tasks;
+    private boolean waiting;
+    private boolean shutdown;
+
+    public void shutdown() {
+        shutdown = true;
+    }
+
+    public CommandQueue() {
+        tasks = new LinkedList<>();
+        waiting = false;
+        new Thread(new Worker()).start();
+    }
+
+    public void put(Command r) {
+        tasks.add(r);
+        if (waiting) {
+            synchronized (this) {
+                notifyAll();
+            }
+        }
+    }
+
+    public Command take() {
+        if (tasks.isEmpty()) {
+            synchronized (this) {
+                waiting = true;
+                try {
+                    wait();
+                } catch (InterruptedException ie) {
+                    waiting = false;
+                }
+            }
+        }
+        return tasks.remove();
+    }
+
+    // Define isEmpty method to check if the queue is empty
+    public boolean isEmpty() {
+        return tasks.isEmpty();
+    }
+
+    private class Worker implements Runnable {
+
+        @Override
+        public void run() {
+            while (!shutdown) {
+                Command r = take();
+                r.execute();
+            }
+        }
+    }
+}
+
+```
+
+`StatisticCommand.java`:
+```java
+package ex06;
+
+import ex02.Item2d;
+import ex03.View_Result;
+import ex05.Command;
+
+import java.util.List;
+
+public class StatisticCommand implements Command {
+
+    private View_Result viewResult;
+
+    // Updated constructor to accept View_Result
+    public StatisticCommand(View_Result viewResult) {
+        this.viewResult = viewResult;
+    }
+
+    @Override
+    public void execute() {
+        List<Item2d> items = viewResult.getItems();
+        if (items.isEmpty()) {
+            System.out.println("Список елементів порожній.");
+            return;
+        }
+
+        double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
+        double sum = 0;
+
+        for (Item2d item : items) {
+            double value = item.getResult();
+            min = Math.min(min, value);
+            max = Math.max(max, value);
+            sum += value;
+        }
+
+        double average = sum / items.size();
+
+        System.out.println("Мінімальне значення: " + min);
+        System.out.println("Максимальне значення: " + max);
+        System.out.println("Середнє значення: " + average);
+    }
+}
+
+```
 
 [До початку](#практика-з-ооп)
 

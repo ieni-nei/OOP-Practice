@@ -1,9 +1,9 @@
-package src.ex03;
+package ex03;
 
 import java.io.IOException;
 import java.util.List;
 
-import src.ex02.Item2d;
+import ex02.Item2d;
 
 /**
  * Інтерфейс для відображення результатів обчислень.

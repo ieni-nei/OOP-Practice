@@ -1,6 +1,6 @@
-package src.ex05;
+package ex05;
 
-import src.ex03.View;
+import ex03.View;
 
 /**Консольна команда Restore
  *
