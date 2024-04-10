@@ -9,11 +9,9 @@ import java.util.concurrent.TimeUnit;
 public class ExecuteConsoleCommand implements ConsoleCommand {
 
     private View view;
-    private CommandQueue commandQueue;
 
-    public ExecuteConsoleCommand(View view, CommandQueue commandQueue) {
+    public ExecuteConsoleCommand(View view) {
         this.view = view;
-        this.commandQueue = commandQueue;
     }
 
     @Override
@@ -28,21 +26,26 @@ public class ExecuteConsoleCommand implements ConsoleCommand {
 
     @Override
     public void execute() {
-        System.out.println("Запустити всі потоки...");
+        System.out.println("Запуст виконання потоків...");
 
-        StatisticCommand statisticCommand = new StatisticCommand((View_Result) view);
-        commandQueue.put(statisticCommand);
+        CommandQueue queue1 = new CommandQueue();
+        CommandQueue queue2 = new CommandQueue();
 
-        try {
-            while (!commandQueue.isEmpty()) {
-                TimeUnit.MILLISECONDS.sleep(100);
-            }
+        AvgCommand avgCommand = new AvgCommand(view);
+        MaxCommand maxCommand = new MaxCommand(view);
+        MinCommand minCommand = new MinCommand(view);
 
-            commandQueue.shutdown();
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            System.err.println(e);
+        queue1.put(avgCommand);
+        queue2.put(maxCommand);
+        queue2.put(minCommand);
+
+        while (avgCommand.isRunning() || maxCommand.isRunning() || minCommand.isRunning()) {
+            TimeUnit.MICROSECONDS.sleep(100);
         }
-        System.out.println("Виконано.");
+
+        queue1.shutdown();
+        queue2.shutdown();
+
+        System.out.println("Звершення роботи потоків.");
     }
 }

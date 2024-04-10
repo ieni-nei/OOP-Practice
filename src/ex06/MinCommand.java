@@ -6,11 +6,11 @@ import ex05.Command;
 
 import java.util.List;
 
-public class MinMaxCommand implements Command {
+public class MinCommand implements Command {
 
     private View_Result viewResult;
 
-    public MinMaxCommand(View_Result viewResult) {
+    public MinCommand(View_Result viewResult) {
         this.viewResult = viewResult;
     }
 

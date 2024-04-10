@@ -2,27 +2,27 @@ package ex06;
 
 import ex05.Command;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Vector;
 
-public class CommandQueue {
+public class CommandQueue implements Queue {
 
-    private Queue<Command> tasks;
+    private final Vector<Command> tasks;
     private boolean waiting;
-    private boolean shutdown;
+    private boolean shutdown = true;
 
     public void shutdown() {
-        shutdown = true;
+        this.shutdown = true;
     }
 
     public CommandQueue() {
-        tasks = new LinkedList<>();
+        tasks = new Vector<Command>();
         waiting = false;
         new Thread(new Worker()).start();
     }
 
-    public void put(Command r) {
-        tasks.add(r);
+    @Override
+    public void put(Command command) {
+        tasks.add(command);
         if (waiting) {
             synchronized (this) {
                 notifyAll();
@@ -30,6 +30,7 @@ public class CommandQueue {
         }
     }
 
+    @Override
     public Command take() {
         if (tasks.isEmpty()) {
             synchronized (this) {
@@ -41,12 +42,7 @@ public class CommandQueue {
                 }
             }
         }
-        return tasks.remove();
-    }
-
-    // Define isEmpty method to check if the queue is empty
-    public boolean isEmpty() {
-        return tasks.isEmpty();
+        return (Command) tasks.remove(0);
     }
 
     private class Worker implements Runnable {
@@ -54,8 +50,12 @@ public class CommandQueue {
         @Override
         public void run() {
             while (!shutdown) {
-                Command r = take();
-                r.execute();
+                Command command = take();
+                try {
+                    command.execute();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }

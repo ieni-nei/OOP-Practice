@@ -25,6 +25,7 @@ public class Application {
     public void run() {
         menu.add(new ViewConsoleCommand(view));
         menu.add(new GenerateConsoleCommand(view));
+        menu.add(new DefaultConsoleCommand(view));
         menu.add(new ChangeConsoleCommand(view));
         menu.add(new SaveConsoleCommand(view));
         menu.add(new RestoreConsoleCommand(view));

@@ -87,7 +87,7 @@ public class View_Result implements View {
         }
         double average = Calculate.calculateAverage(arguments);
         items.add(new Item2d(arguments, average));
-        System.out.println("Обрано 4 статичних аргументи");
+        System.out.println("Обрано 4 статичних аргументи.");
     }
 
 
