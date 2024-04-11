@@ -1,26 +1,39 @@
 package ex06;
 
+import ex02.Calculate;
 import ex02.Item2d;
-import ex03.View_Result;
+import ex03.View;
 import ex05.Command;
 
 import java.util.List;
 
+/**
+ * Клас, що реалізує команду для знаходження середнього арифметичного значення.
+ */
 public class AvgCommand implements Command {
 
-    private View_Result viewResult;
+    private View view;
 
-    public AvgCommand(View_Result viewResult) {
-        this.viewResult = viewResult;
+    /**
+     * Конструктор класу AvgCommand.
+     *
+     * @param view Представлення, з якого отримується список елементів.
+     */
+    public AvgCommand(View view) {
+        this.view = view;
     }
 
+    
+    /**
+     * Виконання команди для знаходження середнього арифметичного значення.
+     */
     @Override
     public void execute() {
-        System.out.println("Середнє обчислено...");
+        System.out.println("Визначення середнього арифметичного...");
         double result = 0;
         int count = 0;
 
-        List<Item2d> items = viewResult.getItems();
+        List<Item2d> items = view.getItems();
         if (items.isEmpty()) {
             System.out.println("Список елементів порожній.");
             return;
@@ -38,7 +51,7 @@ public class AvgCommand implements Command {
 
         if (count > 0) {
             result /= count;
-            System.out.println("Середнє арифметичне аргументів = " + result);
+            System.out.println("Середнє арифметичне аргументів = " + Calculate.roundValue(result, 2));
         } else {
             System.out.println("Немає аргументів для обчислення середнього арифметичного.");
         }

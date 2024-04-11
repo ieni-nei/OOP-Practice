@@ -1,15 +1,23 @@
 package ex06;
 
 import ex03.View;
-import ex03.View_Result;
+import ex05.Command;
 import ex05.ConsoleCommand;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
+/**
+ * Команда для виконання інших команд у відокремленому потоці.
+ * Забезпечує виконання переданих команд у відокремленому потоці, використовуючи ExecutorService.
+ */
 public class ExecuteConsoleCommand implements ConsoleCommand {
 
     private View view;
 
+    /**
+     * Конструктор, що ініціалізує об'єкт класу ExecuteConsoleCommand з переданим інтерфейсом View.
+     * @param view інтерфейс для відображення результатів обчислень
+     */
     public ExecuteConsoleCommand(View view) {
         this.view = view;
     }
@@ -26,26 +34,43 @@ public class ExecuteConsoleCommand implements ConsoleCommand {
 
     @Override
     public void execute() {
-        System.out.println("Запуст виконання потоків...");
+        System.out.println("Запуск виконання потоків...");
 
-        CommandQueue queue1 = new CommandQueue();
-        CommandQueue queue2 = new CommandQueue();
+        // Створення ExecutorService з двома потоками
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        AvgCommand avgCommand = new AvgCommand(view);
-        MaxCommand maxCommand = new MaxCommand(view);
-        MinCommand minCommand = new MinCommand(view);
+        // Подання команд до сервісу виконання
+        executorService.execute(new CommandRunner(new AvgCommand(view)));
+        executorService.execute(new CommandRunner(new MinMaxCommand(view)));
 
-        queue1.put(avgCommand);
-        queue2.put(maxCommand);
-        queue2.put(minCommand);
+        // Зупинка сервісу виконання
+        executorService.shutdown();
 
-        while (avgCommand.isRunning() || maxCommand.isRunning() || minCommand.isRunning()) {
-            TimeUnit.MICROSECONDS.sleep(100);
+        // Очікування завершення виконання всіх команд
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        queue1.shutdown();
-        queue2.shutdown();
+        System.out.println("Завершення роботи потоків.");
+    }
 
-        System.out.println("Звершення роботи потоків.");
+    // Внутрішній клас для адаптації класів Command до Runnable
+    private static class CommandRunner implements Runnable {
+        private final Command command;
+
+        /**
+         * Конструктор, що ініціалізує об'єкт CommandRunner з переданою командою.
+         * @param command команда для виконання
+         */
+        public CommandRunner(Command command) {
+            this.command = command;
+        }
+
+        @Override
+        public void run() {
+            command.execute();
+        }
     }
 }

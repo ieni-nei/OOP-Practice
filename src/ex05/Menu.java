@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-/**Макрокоманда Pattern Command
+/**
+ * Макрокоманда Pattern Command
  * 
  * Колекція об'єктів класу ConsoleCommand
  */

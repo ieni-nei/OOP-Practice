@@ -14,6 +14,11 @@ public class Application {
 
     private Application() {}
 
+    /**
+     * Повертає єдиний екземпляр класу Application.
+     * 
+     * @return єдиний екземпляр класу Application
+     */
     public static Application getInstance() {
         return instance;
     }
@@ -22,6 +27,9 @@ public class Application {
 
     private final Menu menu = new Menu();
 
+    /**
+     * Запускає додаток, додаючи команди до меню та виконуючи його.
+     */
     public void run() {
         menu.add(new ViewConsoleCommand(view));
         menu.add(new GenerateConsoleCommand(view));

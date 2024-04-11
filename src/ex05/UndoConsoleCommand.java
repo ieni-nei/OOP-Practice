@@ -1,8 +1,8 @@
 package ex05;
 
 import ex03.View;
-/**Консольна команда Undo 
- *
+/**
+ * Консольна команда, що скасовує команду. 
  */
 public class UndoConsoleCommand implements ConsoleCommand {
 
@@ -24,10 +24,10 @@ public class UndoConsoleCommand implements ConsoleCommand {
 
     @Override
     public void execute() {
-        UndoReserve un = new UndoReserve(view);
+        UndoReserve undoReserve = new UndoReserve(view);
         System.out.println("Скасувано останню команду.");
         try {
-            un.undo();
+            undoReserve.undo();
         } catch (Exception e) {
             System.err.println("Помилка серіалізації: " + e);
         }

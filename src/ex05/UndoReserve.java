@@ -14,7 +14,7 @@ import java.util.List;
 public class UndoReserve {
 
     private static final String LAST_FILE = "temp/Task-5/item.dat";
-    private static final String BACKUP_FILE = "temp/Task-5/item.dat";
+    private static final String BACKUP_FILE = "temp/Task-5/item_backup.dat";
 
     private List<Item2d> items;
     private View view;

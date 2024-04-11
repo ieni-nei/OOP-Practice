@@ -4,16 +4,17 @@
 
 | Завдання та зображення                                 |      Коди       |       Тести       |
 | :----------------------------------------------------- | :-------------: | :---------------: |
-| [Завдання 7]()                                         |  [#](src/ex07)  |  [#](test/ex07)   |
-| [Завдання 6](#завдання-6---паралельне-виконання050424) | [Код](src/ex06) |         —         |
-| [Завдання 5](#завдання-5---обробка-колекцій-040424)    | [Код](src/ex05) |         —         |
+| [Завдання 7](#завдання-7---діалоговий-інтерфейс080424) | [Код](src/ex07) | [Тест](test/ex07) |
+| [Завдання 6](#завдання-6---паралельне-виконання050424) | [Код](src/ex06) | [Тест](test/ex06) |
+| [Завдання 5](#завдання-5---обробка-колекцій-040424)    | [Код](src/ex05) | [Тест](test/ex05) |
 | [Завдання 4](#завдання-4---поліморфізм-030424)         | [Код](src/ex04) | [Тест](test/ex04) |
 | [Завдання 3](#завдання-3---спадкування-020424)         | [Код](src/ex03) | [Тест](test/ex03) |
 | [Завдання 2](#завдання-2---класи-та-обєкти-010424)     | [Код](src/ex02) | [Тест](test/ex02) |
-| [Завдання 1](#завдання-1-290323)                       | [Код](src/ex01) | [Тест](test/ex01) |
+| [Завдання 1 (вступне)](#завдання-1-290323)             | [Код](src/ex01) | [Тест](test/ex01) |
 
-## Завдання 7 - 
+## Завдання 7 - Діалоговий інтерфейс.(08.04.24) 
 <img src="images/Readme/Weekend.gif" width="210px" align="right">
+
 Розробити ієрархію класів відповідно до шаблону Observer (java) та продемонструвати можливість обслуговування розробленої раніше колекції (об'єкт, що спостерігається, Observable) різними (не менше двох) спостерігачами (Observers) – відстеження змін, упорядкування, висновок, відображення і т.д.<br>
 
 При реалізації ієрархії класів використати інструкції (Annotation). Відзначити особливості різних політик утримання анотацій (annotation retention policies). Продемонструвати підтримку класів концепції рефлексії (Reflection).<br>
@@ -32,7 +33,6 @@
 
 ```
 
-
 [До початку](#практика-з-ооп)
 
 ## Завдання 6 - Паралельне виконання.(05.04.24)
@@ -40,9 +40,11 @@
 
 Управління чергою завдань (команд) реалізувати за допомогою шаблону Worker Thread.<br>
 
-
 `Результат:`<br>
 ![](images/Task-6/Result.png)
+
+`Результат тестування:`<br>
+![](images/Task-6/MainTest.png)
 
 `Main.java`:
 ```java
@@ -52,23 +54,37 @@ import ex03.View;
 import ex04.Viewable_Table;
 import ex05.*;
 
+/**
+ * Клас для запуску головного модуля програми.
+ */
 public class Main {
 
+    /** Представлення для відображення даних. */
     private View view = new Viewable_Table().getView();
-    private Menu menu = new Menu();
-    private CommandQueue commandQueue = new CommandQueue();
 
+    /** Меню для взаємодії з користувачем. */
+    private Menu menu = new Menu();
+
+    /**
+     * Запускає головний модуль програми.
+     */
     public void run() {
         menu.add(new ViewConsoleCommand(view));
         menu.add(new GenerateConsoleCommand(view));
+        menu.add(new DefaultConsoleCommand(view));
         menu.add(new ChangeConsoleCommand(view));
         menu.add(new SaveConsoleCommand(view));
         menu.add(new RestoreConsoleCommand(view));
         menu.add(new UndoConsoleCommand(view));
-        menu.add(new ExecuteConsoleCommand(view, commandQueue));
+        menu.add(new ExecuteConsoleCommand(view));
         menu.execute();
     }
 
+    /**
+     * Точка входу у програму.
+     *
+     * @param args аргументи командного рядка
+     */
     public static void main(String[] args) {
         Main main = new Main();
         main.run();
@@ -83,27 +99,36 @@ package ex06;
 
 import ex05.Command;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Vector;
 
-public class CommandQueue {
+/**
+ * Клас, що реалізує чергу команд.
+ */
+public class CommandQueue implements Queue {
 
-    private Queue<Command> tasks;
+    private final Vector<Command> tasks;
     private boolean waiting;
-    private boolean shutdown;
+    private boolean shutdown = true;
 
+    /**
+     * Закриває чергу команд.
+     */
     public void shutdown() {
-        shutdown = true;
+        this.shutdown = true;
     }
 
+    /**
+     * Конструктор класу CommandQueue.
+     */
     public CommandQueue() {
-        tasks = new LinkedList<>();
+        tasks = new Vector<Command>();
         waiting = false;
         new Thread(new Worker()).start();
     }
 
-    public void put(Command r) {
-        tasks.add(r);
+    @Override
+    public void put(Command command) {
+        tasks.add(command);
         if (waiting) {
             synchronized (this) {
                 notifyAll();
@@ -111,6 +136,7 @@ public class CommandQueue {
         }
     }
 
+    @Override
     public Command take() {
         if (tasks.isEmpty()) {
             synchronized (this) {
@@ -122,12 +148,7 @@ public class CommandQueue {
                 }
             }
         }
-        return tasks.remove();
-    }
-
-    // Define isEmpty method to check if the queue is empty
-    public boolean isEmpty() {
-        return tasks.isEmpty();
+        return (Command) tasks.remove(0);
     }
 
     private class Worker implements Runnable {
@@ -135,8 +156,12 @@ public class CommandQueue {
         @Override
         public void run() {
             while (!shutdown) {
-                Command r = take();
-                r.execute();
+                Command command = take();
+                try {
+                    command.execute();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
@@ -144,49 +169,72 @@ public class CommandQueue {
 
 ```
 
-`StatisticCommand.java`:
+`MainTest.java`:
 ```java
-package ex06;
+package test.ex06;
 
-import ex02.Item2d;
-import ex03.View_Result;
-import ex05.Command;
+import ex03.View;
+import ex04.Viewable_Table;
+import ex06.ExecuteConsoleCommand;
 
-import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
-public class StatisticCommand implements Command {
+/**
+ * Клас для тестування виконання команд з консолі.
+ */
+public class MainTest {
+    /**
+     * Точка входу в програму для тестування.
+     *
+     * @param args аргументи командного рядка (не використовуються).
+     * @throws Exception якщо виникає помилка під час виконання тесту.
+     */
+    public static void main(String[] args) throws Exception {
+        MainTest test = new MainTest();
+        test.setUpStreams();
+        test.testExecute();
+        test.restoreStreams();
+    }
+    
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
 
-    private View_Result viewResult;
-
-    // Updated constructor to accept View_Result
-    public StatisticCommand(View_Result viewResult) {
-        this.viewResult = viewResult;
+    /**
+     * Налаштування перехоплення виведення в консоль.
+     */
+    public void setUpStreams() {
+        System.setOut(new PrintStream(outContent));
     }
 
-    @Override
-    public void execute() {
-        List<Item2d> items = viewResult.getItems();
-        if (items.isEmpty()) {
-            System.out.println("Список елементів порожній.");
-            return;
-        }
+    /**
+     * Відновлення оригінального виведення в консоль.
+     */
+    public void restoreStreams() {
+        System.setOut(originalOut);
+        System.out.println(outContent.toString()); // Вивід перехопленого виведення
+    }
 
-        double min = Double.MAX_VALUE;
-        double max = Double.MIN_VALUE;
-        double sum = 0;
+    /**
+     * Тестування виконання команд.
+     *
+     * @throws Exception якщо виникає помилка під час виконання тесту.
+     */
+    public void testExecute() throws Exception {
+        View view = new Viewable_Table().getView();
 
-        for (Item2d item : items) {
-            double value = item.getResult();
-            min = Math.min(min, value);
-            max = Math.max(max, value);
-            sum += value;
-        }
+        view.init();
 
-        double average = sum / items.size();
+        ExecuteConsoleCommand executeConsoleCommand = new ExecuteConsoleCommand(view);
 
-        System.out.println("Мінімальне значення: " + min);
-        System.out.println("Максимальне значення: " + max);
-        System.out.println("Середнє значення: " + average);
+        executeConsoleCommand.execute();
+
+        String output = outContent.toString().trim();
+
+        // Перевірка виведених результатів наявності необхідних рядків
+        assert (output.contains("Середнє арифметичне аргументів = "));
+        assert (output.contains("Найменший аргумент = "));
+        assert (output.contains("Найбільший аргумент = "));
     }
 }
 
@@ -211,6 +259,9 @@ public class StatisticCommand implements Command {
 https://github.com/ieni-nei/OOP-Practice/assets/113203792/5c3cf089-0a20-477e-8b7b-1a0b54448e18
 
 
+`Результат тестування:`<br>
+![](images/Task-5/MainTest.png)
+
 `Main.java`:
 ```java
 package src.ex05;
@@ -225,6 +276,54 @@ public class Main {
     public static void main(String[] args){
         Application app = Application.getInstance();
         app.run();
+    }
+}
+
+```
+
+`MainTest.java`:
+```java
+package test.ex05;
+
+import ex02.Item2d;
+import ex05.ChangeItemCommand;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Клас для тестування класу ChangeItemCommand.
+ */
+public class MainTest {
+
+    /**
+     * Головний метод програми.
+     *
+     * @param args аргументи командного рядка
+     */
+    public static void main(String[] args) {
+        testChangeItemCommand();
+    }
+
+    /**
+     * Метод для тестування зміни елемента.
+     */
+    private static void testChangeItemCommand() {
+        System.out.println("Тестування ChangeItemCommand...");
+        List<Double> initialArguments = new ArrayList<>();
+        initialArguments.add(1.0);
+        initialArguments.add(2.0);
+        initialArguments.add(3.0);
+
+        Item2d item = new Item2d(initialArguments);
+
+        ChangeItemCommand command = new ChangeItemCommand(item);
+
+        System.out.println("Початкові аргументи елемента: " + item.getArguments());
+
+        command.execute();
+
+        System.out.println("Змінені аргументи елемента: " + item.getArguments());
     }
 }
 

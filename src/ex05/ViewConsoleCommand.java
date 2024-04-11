@@ -2,8 +2,8 @@ package ex05;
 
 import ex03.View;
 
-/**Консольна команда View
- *
+/**
+ * Консольна команда, що відображає об'єкт.
  */
 public class ViewConsoleCommand implements ConsoleCommand {
 

@@ -65,6 +65,7 @@ public class Item2d implements Serializable {
      */
     public void setArguments(List<Double> arguments) {
         this.arguments = arguments;
+        this.result = Calculate.calculateAverage(arguments);
     }
 
     /**
@@ -96,13 +97,5 @@ public class Item2d implements Serializable {
         Item2d other = (Item2d) obj;
         return Arrays.equals(arguments.toArray(), other.arguments.toArray()) &&
                Double.compare(result, other.result) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        int result1 = arguments != null ? arguments.hashCode() : 0;
-        long temp = Double.doubleToLongBits(result);
-        result1 = 31 * result1 + (int) (temp ^ (temp >>> 32));
-        return result1;
     }
 }

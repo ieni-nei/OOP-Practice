@@ -4,16 +4,25 @@ import ex05.Command;
 
 import java.util.Vector;
 
+/**
+ * Клас, що реалізує чергу команд.
+ */
 public class CommandQueue implements Queue {
 
     private final Vector<Command> tasks;
     private boolean waiting;
     private boolean shutdown = true;
 
+    /**
+     * Закриває чергу команд.
+     */
     public void shutdown() {
         this.shutdown = true;
     }
 
+    /**
+     * Конструктор класу CommandQueue.
+     */
     public CommandQueue() {
         tasks = new Vector<Command>();
         waiting = false;

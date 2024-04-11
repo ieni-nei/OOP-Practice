@@ -2,8 +2,8 @@ package ex05;
 
 import ex03.View;
 
-/**Консольна команда Restore
- *
+/**
+ * Консольна команда, що відновлює об'єкт після серіалізації.
  */
 public class RestoreConsoleCommand implements ConsoleCommand {
 

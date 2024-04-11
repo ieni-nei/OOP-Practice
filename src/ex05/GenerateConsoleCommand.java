@@ -1,8 +1,8 @@
 package ex05;
 
 import ex03.View;
-/**Консольна команда Generate
- *
+/**
+ * Реалізація консольної команди для генерування випадкових агрументів.
  */
 public class GenerateConsoleCommand implements ConsoleCommand {
     
