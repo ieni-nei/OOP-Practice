@@ -9,7 +9,7 @@ public class Main {
     /**
      * Головний метод.
      * 
-     * @author Головненко Леонід aka @ieni-nei
+     * @author @ieni-nei
      * @param args Аргументи командного рядка (не використовуються в цій програмі).
      */
     public static void main(String[] args) {

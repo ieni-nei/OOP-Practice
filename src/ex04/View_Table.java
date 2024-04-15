@@ -9,7 +9,7 @@ import ex03.View_Result;
 /**
  * Клас для відображення результатів у вигляді таблиці.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class View_Table extends View_Result {
 

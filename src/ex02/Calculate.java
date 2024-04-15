@@ -8,7 +8,7 @@ import java.util.Random;
 /**
  * Клас для обчислення значень та перетворення чисел.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class Calculate {
     private static final Random random = new Random();

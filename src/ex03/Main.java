@@ -7,7 +7,7 @@ import java.util.Scanner;
 /**
  * Клас для демонстрації збереження та відновлення стану об'єкта з використанням серіалізації.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class Main {
     /**

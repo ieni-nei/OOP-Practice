@@ -2,70 +2,52 @@ package ex06;
 
 import ex05.Command;
 
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Клас, що реалізує чергу команд.
  */
-public class CommandQueue implements Queue {
+public class CommandQueue {
 
-    private final Vector<Command> tasks;
-    private boolean waiting;
-    private boolean shutdown = true;
+    private final Queue<Command> tasks;
+    private boolean shutdown = false;
 
     /**
      * Закриває чергу команд.
      */
-    public void shutdown() {
+    public synchronized void shutdown() {
         this.shutdown = true;
+        notifyAll();
     }
 
     /**
      * Конструктор класу CommandQueue.
      */
     public CommandQueue() {
-        tasks = new Vector<Command>();
-        waiting = false;
-        new Thread(new Worker()).start();
+        tasks = new LinkedList<>();
     }
 
-    @Override
-    public void put(Command command) {
+    /**
+     * Додає команду до черги.
+     *
+     * @param command Команда, яку потрібно додати до черги.
+     */
+    public synchronized void put(Command command) {
         tasks.add(command);
-        if (waiting) {
-            synchronized (this) {
-                notifyAll();
-            }
-        }
+        notifyAll();
     }
 
-    @Override
-    public Command take() {
-        if (tasks.isEmpty()) {
-            synchronized (this) {
-                waiting = true;
-                try {
-                    wait();
-                } catch (InterruptedException ie) {
-                    waiting = false;
-                }
-            }
+    /**
+     * Повертає та видаляє команду з черги.
+     *
+     * @return Команда, що вийшла з черги.
+     * @throws InterruptedException Виникає, якщо виникає помилка під час очікування команди у черзі.
+     */
+    public synchronized Command take() throws InterruptedException {
+        while (tasks.isEmpty() && !shutdown) {
+            wait();
         }
-        return (Command) tasks.remove(0);
-    }
-
-    private class Worker implements Runnable {
-
-        @Override
-        public void run() {
-            while (!shutdown) {
-                Command command = take();
-                try {
-                    command.execute();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
+        return tasks.poll();
     }
 }

@@ -8,7 +8,7 @@ import java.io.*;
 /**
  * Клас для тестування серіалізації/десеріалізації та обчислення середнього значення.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class MainTest {
     /**

@@ -4,7 +4,7 @@ package ex05;
  * Обчислення та відображення результатів
  * Містить реалізацію статичного методу main()
  *
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class Main {
     

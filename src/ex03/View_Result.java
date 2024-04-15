@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Клас для відображення результатів обчислень.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class View_Result implements View {
     private final List<Item2d> items = new ArrayList<>();

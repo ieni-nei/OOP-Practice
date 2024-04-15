@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Клас, що серіалізується, представляє параметри та результати обчислень.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class Item2d implements Serializable {
     private static final long serialVersionUID = 1L;

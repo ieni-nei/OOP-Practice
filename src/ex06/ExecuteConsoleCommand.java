@@ -1,10 +1,11 @@
 package ex06;
 
 import ex03.View;
-import ex05.Command;
 import ex05.ConsoleCommand;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Команда для виконання інших команд у відокремленому потоці.
@@ -16,6 +17,7 @@ public class ExecuteConsoleCommand implements ConsoleCommand {
 
     /**
      * Конструктор, що ініціалізує об'єкт класу ExecuteConsoleCommand з переданим інтерфейсом View.
+     *
      * @param view інтерфейс для відображення результатів обчислень
      */
     public ExecuteConsoleCommand(View view) {
@@ -40,8 +42,13 @@ public class ExecuteConsoleCommand implements ConsoleCommand {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
         // Подання команд до сервісу виконання
-        executorService.execute(new CommandRunner(new AvgCommand(view)));
-        executorService.execute(new CommandRunner(new MinMaxCommand(view)));
+        executorService.submit(() -> {
+            new AvgCommand(view).execute();
+        });
+
+        executorService.submit(() -> {
+            new MinMaxCommand(view).execute();
+        });
 
         // Зупинка сервісу виконання
         executorService.shutdown();
@@ -50,27 +57,11 @@ public class ExecuteConsoleCommand implements ConsoleCommand {
         try {
             executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
+
+        executorService.shutdown();
 
         System.out.println("Завершення роботи потоків.");
-    }
-
-    // Внутрішній клас для адаптації класів Command до Runnable
-    private static class CommandRunner implements Runnable {
-        private final Command command;
-
-        /**
-         * Конструктор, що ініціалізує об'єкт CommandRunner з переданою командою.
-         * @param command команда для виконання
-         */
-        public CommandRunner(Command command) {
-            this.command = command;
-        }
-
-        @Override
-        public void run() {
-            command.execute();
-        }
     }
 }

@@ -8,7 +8,7 @@ import ex02.Item2d;
 /**
  * Інтерфейс для відображення результатів обчислень.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public interface View {
     /**

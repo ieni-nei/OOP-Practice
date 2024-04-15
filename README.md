@@ -13,8 +13,6 @@
 | [Завдання 1 (вступне)](#завдання-1-290323)             | [Код](src/ex01) | [Тест](test/ex01) |
 
 ## Завдання 7 - Діалоговий інтерфейс.(08.04.24) 
-<img src="images/Readme/Weekend.gif" width="210px" align="right">
-
 Розробити ієрархію класів відповідно до шаблону Observer (java) та продемонструвати можливість обслуговування розробленої раніше колекції (об'єкт, що спостерігається, Observable) різними (не менше двох) спостерігачами (Observers) – відстеження змін, упорядкування, висновок, відображення і т.д.<br>
 
 При реалізації ієрархії класів використати інструкції (Annotation). Відзначити особливості різних політик утримання анотацій (annotation retention policies). Продемонструвати підтримку класів концепції рефлексії (Reflection).<br>
@@ -99,71 +97,125 @@ package ex06;
 
 import ex05.Command;
 
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Клас, що реалізує чергу команд.
  */
-public class CommandQueue implements Queue {
+public class CommandQueue {
 
-    private final Vector<Command> tasks;
-    private boolean waiting;
-    private boolean shutdown = true;
+    private final Queue<Command> tasks;
+    private boolean shutdown = false;
 
     /**
      * Закриває чергу команд.
      */
-    public void shutdown() {
+    public synchronized void shutdown() {
         this.shutdown = true;
+        notifyAll();
     }
 
     /**
      * Конструктор класу CommandQueue.
      */
     public CommandQueue() {
-        tasks = new Vector<Command>();
-        waiting = false;
-        new Thread(new Worker()).start();
+        tasks = new LinkedList<>();
     }
 
-    @Override
-    public void put(Command command) {
+    /**
+     * Додає команду до черги.
+     *
+     * @param command Команда, яку потрібно додати до черги.
+     */
+    public synchronized void put(Command command) {
         tasks.add(command);
-        if (waiting) {
-            synchronized (this) {
-                notifyAll();
-            }
+        notifyAll();
+    }
+
+    /**
+     * Повертає та видаляє команду з черги.
+     *
+     * @return Команда, що вийшла з черги.
+     * @throws InterruptedException Виникає, якщо виникає помилка під час очікування команди у черзі.
+     */
+    public synchronized Command take() throws InterruptedException {
+        while (tasks.isEmpty() && !shutdown) {
+            wait();
         }
+        return tasks.poll();
+    }
+}
+
+```
+
+`ExecuteConsoleCommand.java`:
+```java
+package ex06;
+
+import ex03.View;
+import ex05.ConsoleCommand;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Команда для виконання інших команд у відокремленому потоці.
+ * Забезпечує виконання переданих команд у відокремленому потоці, використовуючи ExecutorService.
+ */
+public class ExecuteConsoleCommand implements ConsoleCommand {
+
+    private View view;
+
+    /**
+     * Конструктор, що ініціалізує об'єкт класу ExecuteConsoleCommand з переданим інтерфейсом View.
+     *
+     * @param view інтерфейс для відображення результатів обчислень
+     */
+    public ExecuteConsoleCommand(View view) {
+        this.view = view;
     }
 
     @Override
-    public Command take() {
-        if (tasks.isEmpty()) {
-            synchronized (this) {
-                waiting = true;
-                try {
-                    wait();
-                } catch (InterruptedException ie) {
-                    waiting = false;
-                }
-            }
-        }
-        return (Command) tasks.remove(0);
+    public char getKey() {
+        return 'e';
     }
 
-    private class Worker implements Runnable {
+    @Override
+    public String toString() {
+        return "'e'xecute";
+    }
 
-        @Override
-        public void run() {
-            while (!shutdown) {
-                Command command = take();
-                try {
-                    command.execute();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
+    @Override
+    public void execute() {
+        System.out.println("Запуск виконання потоків...");
+
+        // Створення ExecutorService з двома потоками
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        // Подання команд до сервісу виконання
+        executorService.submit(() -> {
+            new AvgCommand(view).execute();
+        });
+
+        executorService.submit(() -> {
+            new MinMaxCommand(view).execute();
+        });
+
+        // Зупинка сервісу виконання
+        executorService.shutdown();
+
+        // Очікування завершення виконання всіх команд
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
+
+        executorService.shutdown();
+
+        System.out.println("Завершення роботи потоків.");
     }
 }
 
@@ -269,7 +321,7 @@ package src.ex05;
 /**Обчислення та відображення результатів
  * Містить реалізацію статичного методу main()
  *
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class Main {
     
@@ -477,7 +529,7 @@ import java.util.Scanner;
 /**
  * Клас для демонстрації збереження та відновлення стану об'єкта з використанням серіалізації.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class Main {
     /**
@@ -561,7 +613,7 @@ import src.ex03.View_Result;
 /**
  * Клас для відображення результатів у вигляді таблиці.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class View_Table extends View_Result {
 
@@ -711,7 +763,7 @@ import java.util.Scanner;
 /**
  * Клас для демонстрації збереження та відновлення стану об'єкта з використанням серіалізації.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class Main {
     /**
@@ -796,7 +848,7 @@ import java.util.List;
 /**
  * Клас для відображення результатів обчислень.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 public class View_Result implements View {
     private final List<Item2d> items = new ArrayList<>();
@@ -910,7 +962,7 @@ import java.io.IOException;
 /**
  * Інтерфейс для відображення результатів обчислень.
  * 
- * @author Головненко Леонід aka @ieni-nei
+ * @author @ieni-nei
  */
 interface View {
     /**
@@ -961,12 +1013,6 @@ interface View {
 }
 
 ```
-
-
-
-https://github.com/ieni-nei/OOP-Practice/assets/113203792/ca28a50f-4ddb-48aa-9505-a63bc507c9b0
-
-
 
 [До початку](#практика-з-ооп)
 
