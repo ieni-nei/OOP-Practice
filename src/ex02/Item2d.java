@@ -1,5 +1,6 @@
 package ex02;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.List;
  * @author @ieni-nei
  */
 public class Item2d implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     private List<Double> arguments;
     private double result;

@@ -57,9 +57,14 @@ public interface View {
      */
     void restore(String path) throws Exception;
 
+
     /**
      * Повертає список об'єктів типу Item2d.
-     *
      */
     public List<Item2d> getItems();
+
+    /**
+     * Змінює список об'єктів типу Item2d.
+     */
+    public void setItems(List<Item2d> items);
 }

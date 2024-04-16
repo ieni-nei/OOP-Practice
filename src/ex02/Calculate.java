@@ -7,7 +7,7 @@ import java.util.Random;
 
 /**
  * Клас для обчислення значень та перетворення чисел.
- * 
+ *
  * @author @ieni-nei
  */
 public class Calculate {
@@ -21,7 +21,8 @@ public class Calculate {
     public static List<Double> randomArguments() {
         List<Double> arguments = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            double argument = roundValue(random.nextDouble(), 2); // Генерує випадкове дійсне число від 0 до 1
+            // Генерує випадкове дійсне число від 0 до 1
+            double argument = roundValue(random.nextDouble(), 2);
             arguments.add(argument);
         }
         return arguments;
@@ -84,6 +85,8 @@ public class Calculate {
             pattern += "#";
         }
         DecimalFormat df = new DecimalFormat(pattern);
-        return Double.parseDouble(df.format(value));
+        // Замінюємо кому на крапку перед парсингом
+        String formattedValue = df.format(value).replace(",", ".");
+        return Double.parseDouble(formattedValue);
     }
 }

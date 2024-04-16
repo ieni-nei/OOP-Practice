@@ -13,7 +13,7 @@ import java.util.List;
  * @author @ieni-nei
  */
 public class View_Result implements View {
-    private final List<Item2d> items = new ArrayList<>();
+    private List<Item2d> items = new ArrayList<>();
 
     /**
      * Виводить результат.
@@ -60,6 +60,14 @@ public class View_Result implements View {
     @Override
     public List<Item2d> getItems() {
         return this.items;
+    }
+
+    /**
+     * Змінює список елементів, які будуть відображені.
+     */
+    @Override
+    public void setItems(List<Item2d> items) {
+        this.items = items;
     }
 
     /**

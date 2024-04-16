@@ -52,8 +52,7 @@ public class View_Table extends View_Result {
     @Override
     public void body() {
         List<Item2d> items = getItems();
-        for (int i = 0; i < items.size(); i++) {
-            Item2d item = items.get(i);
+        for (Item2d item : items) {
             System.out.printf("%-30s | %-20.2f | %-30s | %-50d\n", item.getArguments(), item.getResult(), Calculate.toBinaryString(item.getResult()), Calculate.countOnes(item.getResult()));
         }
     }
