@@ -1,10 +1,8 @@
 # Практика з ООП
 ### **Навігація**
-<img src="images/Readme/Navigation.jpg" width="210px" align="right">
-
 | Завдання та зображення                                 |      Коди       |       Тести       |
 | :----------------------------------------------------- | :-------------: | :---------------: |
-| [Завдання 7](#завдання-7---діалоговий-інтерфейс080424) | [Код](src/ex07) | [Тест](test/ex07) |
+| [Завдання 7](#завдання-7---діалоговий-інтерфейс080424) | [Код](src/ex07) |         —         |
 | [Завдання 6](#завдання-6---паралельне-виконання050424) | [Код](src/ex06) | [Тест](test/ex06) |
 | [Завдання 5](#завдання-5---обробка-колекцій-040424)    | [Код](src/ex05) | [Тест](test/ex05) |
 | [Завдання 4](#завдання-4---поліморфізм-030424)         | [Код](src/ex04) | [Тест](test/ex04) |
@@ -21,13 +19,225 @@
 
 Забезпечити діалоговий інтерфейс з користувачем та перемальовування графіка під час зміни значень елементів колекції.<br>
 
-`Результат:`
+`Результат:`<br>
+![](images/Task-7/Result-1.png)
 
-`Результат тестування:`<br>
-![](images/Task-7/MainTest.png)
+![](images/Task-7/Result-2.png)
+
+![](images/Task-7/Result-3.png)
+
+![](images/Task-7/Result-4.png)
+
+![](images/Task-7/Result-5.png)
 
 `Main.java`:
 ```java
+package ex07;
+
+/**
+ * Головний клас.
+ */
+public class Main {
+	public static void main(String[] args) {
+		new App();
+	}
+}
+
+```
+
+`App.java`:
+```java
+package ex07;
+
+import ex02.Item2d;
+import ex02.Calculate;
+import ex05.History;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.io.IOException;
+
+/**
+ * Реалізує шаблон Observer.
+ */
+public class App extends JFrame {
+    private static final History history = History.getInstance();
+    private final ObservableViewTable view = new ObservableViewTable();
+
+    private JPanel panel;
+    private JTable table;
+    private JLabel label;
+    private JButton initButton;
+    private JButton defaultButton;
+    private JButton saveButton;
+    private JButton restoreButton;
+    private JButton undoButton;
+
+    public App() {
+        initializeUI();
+        initializeListeners();
+        registerObservers();
+    }
+
+    private void initializeUI() {
+        setContentPane(panel);
+        setSize(800, 300);
+        setVisible(true);
+
+        createTable();
+    }
+
+    private void initializeListeners() {
+        initButton.addActionListener(e -> {
+            history.add(view.getItems());
+            view.init();
+            label.setText("Генерація даних...");
+            updateTable();
+        });
+
+        defaultButton.addActionListener(e -> {
+            history.add(view.getItems());
+            view.initDefault();
+            label.setText("Застосування статичних даних...");
+            updateTable();
+        });
+
+        saveButton.addActionListener(e -> {
+            try {
+                view.save("temp/Task-7/item.dat");
+                label.setText("Збереження даних...");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            updateTable();
+        });
+
+        restoreButton.addActionListener(e -> {
+            try {
+                view.restore("temp/Task-7/item.dat");
+                label.setText("Відновлення даних...");
+            } catch (IOException | ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+            updateTable();
+        });
+
+        undoButton.addActionListener(e -> {
+            History.undo(view);
+            label.setText("Скасування операції...");
+            updateTable();
+        });
+    }
+
+    private void registerObservers() {
+        view.register(new SaveObserver());
+        view.register(new InitObserver());
+        view.register(new UndoObserver());
+    }
+
+    /** Створює пусту таблицю при запуску програми */
+    private void createTable() {
+        table.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Аргументи", "Середнє арифметичне", "Двійкове", "К-ть одиниць"}
+        ));
+    }
+
+    /**
+     * Оновлює дані в таблиці
+     */
+    public void updateTable() {
+        Object[][] values = new Object[view.getItems().size()][4];
+
+        for (int i = 0; i < values.length; i++) {
+            Item2d items = view.getItems().get(i);
+            values[i][0] = items.getArguments();
+            values[i][1] = items.getResult();
+            values[i][2] = Calculate.toBinaryString(items.getResult());
+            values[i][3] = Calculate.countOnes(items.getResult());
+        }
+
+        table.setModel(new DefaultTableModel(values,
+                new String[]{"Аргументи", "Середнє арифметичне", "Двійкове", "К-ть одиниць"}));
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(App::new);
+    }
+}
+
+```
+
+`ObservableViewTable.java`:
+```java
+package ex07;
+
+import ex04.View_Table;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+/**
+ * Спостерігаємоий клас на основі View_Table.
+ * Реалізацію шаблону Observer.
+ */
+public class ObservableViewTable extends View_Table implements Observable {
+    private final ArrayList<Observer> observers = new ArrayList<>();
+
+    /**
+     * Додає спостерігача
+     */
+    @Override
+    public void register(Observer observer) {
+        observers.add(observer);
+    }
+
+    /**
+     * Оповіщає всіх спостерігачів
+     */
+    @Override
+    public void notify(String type, String message) {
+        for (Observer observer : observers) {
+            observer.notify(type, message);
+        }
+    }
+
+    // Відправляє повідомлення про генерацію випадкових даних
+    @Override
+    public void init() {
+        notify(
+                "генерація",
+                "Викликана випадкова генерація даних."
+        );
+
+        super.init();
+    }
+
+    // Відправляє повідомлення про генерацію статичних даних
+    @Override
+    public void initDefault() {
+        notify(
+                "генерація",
+                "Викликана статична генерація даних."
+        );
+
+        super.initDefault();
+    }
+
+    // Відправляє повідомлення про серіалізацію
+    @Override
+    public void save(String path) throws IOException {
+        notify("серіалізація", "Викликана серіалізація");
+        super.save(path);
+    }
+
+    // Відправляє повідомлення про десеріалізацію
+    @Override
+    public void restore(String path) throws IOException, ClassNotFoundException {
+        notify("десеріалізація", "Викликана десеріалізація");
+        super.restore(path);
+    }
+}
 
 ```
 
